@@ -2,20 +2,35 @@
 using System.Collections;
 
 public class SueloController : MonoBehaviour {
-    //private Rigidbody rb;
 
-    // Use this for initialization
+    private bool isAndroid;
+
     void Start () {
-       //rb = GetComponent<Rigidbody>();
+#if UNITY_ANDROID
+        isAndroid = true;
+#else
+        isAndroid = false;
+#endif
     }
 	
-	// Update is called once per frame
 	void FixedUpdate () {
-        float posH = Input.GetAxis("Horizontal");
-        float posV = Input.GetAxis("Vertical");
+        if (isAndroid)
+        {
+            float posH = Input.acceleration.x;
+            float posV = Input.acceleration.y;
 
-        Vector3 movimiento = new Vector3(posH, 0.0f, posV);
+            Vector3 movimiento = new Vector3(posV, posH, 0);
 
-        transform.Rotate(new Vector3(posV, posH, 0));
+            transform.Rotate(movimiento);
+        }
+        else
+        {
+            float posH = Input.GetAxis("Horizontal");
+            float posV = Input.GetAxis("Vertical");
+
+            Vector3 movimiento = new Vector3(posV, posH, 0);
+
+            transform.Rotate(movimiento);
+        }
     }
 }

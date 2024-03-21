@@ -11,6 +11,12 @@ public class PlayerController : MonoBehaviour
     private int contador;
     private bool isAndroid;
 
+    public AudioSource myAudioSource;
+    public AudioClip gemSound;
+    public AudioClip victorySound;
+    public AudioClip defeatSound;
+    public AudioClip movingSound1;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -46,16 +52,24 @@ public class PlayerController : MonoBehaviour
             Vector3 movimiento = new Vector3(posH, 0.0f, posV);
 
             rb.AddForce(movimiento * velocidad);
+
+            if(!myAudioSource.isPlaying){
+                //myAudioSource.PlayOneShot(movingSound1,0.5f);
+            }
         }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("mono"))
+        
+        if (other.gameObject.CompareTag("collectable"))
         {
+            int gemValue = other.gameObject.GetComponent<Gem>().gemValue;
+            //Debug.Log("gemValue: "+gemValue + ", name: "+other.gameObject.name);
             other.gameObject.SetActive(false);
-            contador = contador + 1;
+            contador = contador + gemValue;
             SetCountText();
+            myAudioSource.PlayOneShot(gemSound,1);
         }
     }
 
@@ -65,6 +79,7 @@ public class PlayerController : MonoBehaviour
         if (contador >= 4)
         {
             winText.text = "Ganaste!!";
+            myAudioSource.PlayOneShot(victorySound,1);
         }
     }
 
@@ -73,7 +88,8 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("tablero"))
         {
             winText.text = "Perdiste?!! :(";
-            Invoke("QuitGame", 1f);
+            myAudioSource.PlayOneShot(defeatSound,1);
+            Invoke("QuitGame", 3f);
         }
     }
 
