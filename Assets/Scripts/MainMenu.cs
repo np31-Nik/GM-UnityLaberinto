@@ -22,10 +22,6 @@ public class MainMenu : MonoBehaviour
         audioSource.PlayOneShot(buttonPress,1f);
         storePanel.SetActive(!aboutPanel.activeSelf);
     }
-    public void Mute(){
-        audioSource.PlayOneShot(buttonPress,1f);
-        audioSource.mute = !audioSource.mute;
-    }
     public void About(){
         audioSource.PlayOneShot(buttonPress,1f);
         aboutPanel.SetActive(!aboutPanel.activeSelf);

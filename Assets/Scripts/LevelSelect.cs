@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class LevelSelect : MonoBehaviour
 {
+    public void Start(){
+
+    }
     public void Level1(){
         //SceneManager.LoadScene("level1");
         SceneManager.LoadScene("test_gems");
