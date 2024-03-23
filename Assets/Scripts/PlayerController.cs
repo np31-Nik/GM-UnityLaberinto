@@ -17,8 +17,11 @@ public class PlayerController : MonoBehaviour
     public AudioClip defeatSound;
     public AudioClip movingSound1;
 
+    private bool gameEnded;
+
     void Start()
     {
+        gameEnded = false;
         rb = GetComponent<Rigidbody>();
         contador = 0;
         SetCountText();
@@ -33,44 +36,47 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isAndroid)
-        {
-            // Get input from accelerometer
-            float posH = Input.acceleration.x;
-            float posV = Input.acceleration.y;
+        if(!gameEnded){
+            if (isAndroid){
+                // Get input from accelerometer
+                float posH = Input.acceleration.x;
+                float posV = Input.acceleration.y;
 
-            Vector3 movimiento = new Vector3(posH, 0.0f, posV);
+                Vector3 movimiento = new Vector3(posH, 0.0f, posV);
 
-            rb.AddForce(movimiento * velocidad);
-        }
-        else
-        {
-            // Get input from arrow keys
-            float posH = Input.GetAxis("Horizontal");
-            float posV = Input.GetAxis("Vertical");
+                rb.AddForce(movimiento * velocidad);
+            }
+            else
+            {
+                // Get input from arrow keys
+                float posH = Input.GetAxis("Horizontal");
+                float posV = Input.GetAxis("Vertical");
 
-            Vector3 movimiento = new Vector3(posH, 0.0f, posV);
+                Vector3 movimiento = new Vector3(posH, 0.0f, posV);
 
-            rb.AddForce(movimiento * velocidad);
+                rb.AddForce(movimiento * velocidad);
 
-            if(!myAudioSource.isPlaying){
-                //myAudioSource.PlayOneShot(movingSound1,0.5f);
+                if(!myAudioSource.isPlaying){
+                    //myAudioSource.PlayOneShot(movingSound1,0.5f);
+                }
             }
         }
+        
     }
 
     void OnTriggerEnter(Collider other)
     {
-        
-        if (other.gameObject.CompareTag("collectable"))
-        {
-            int gemValue = other.gameObject.GetComponent<Gem>().gemValue;
-            //Debug.Log("gemValue: "+gemValue + ", name: "+other.gameObject.name);
-            other.gameObject.SetActive(false);
-            contador = contador + gemValue;
-            SetCountText();
-            myAudioSource.PlayOneShot(gemSound,1);
+        if(!gameEnded){
+            if (other.gameObject.CompareTag("collectable")){
+                int gemValue = other.gameObject.GetComponent<Gem>().gemValue;
+                //Debug.Log("gemValue: "+gemValue + ", name: "+other.gameObject.name);
+                other.gameObject.SetActive(false);
+                contador = contador + gemValue;
+                SetCountText();
+                myAudioSource.PlayOneShot(gemSound,1);
+            }
         }
+        
     }
 
     void SetCountText()
@@ -80,25 +86,29 @@ public class PlayerController : MonoBehaviour
         {
             winText.text = "Ganaste!!";
             myAudioSource.PlayOneShot(victorySound,1);
+            Time.timeScale = 0;
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("DeadZone"))
-        {
-            winText.text = "Perdiste?!! :(";
-            myAudioSource.PlayOneShot(defeatSound,1);
-            Invoke("QuitGame", 3f);
+        if(!gameEnded){
+            if (other.gameObject.CompareTag("DeadZone"))
+            {
+                winText.text = "Perdiste?!! :(";
+                myAudioSource.PlayOneShot(defeatSound,1);
+                Invoke("QuitGame", 3f);
+            }
         }
+        
     }
 
     void QuitGame()
     {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
+        #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+        #else
+                Application.Quit();
+        #endif
     }
 }
