@@ -5,6 +5,7 @@ using UnityEngine;
 public class Persistent : MonoBehaviour
 {
     private AudioSource _audioSource;
+    
     private void Awake()
     {
         DontDestroyOnLoad(transform.gameObject);
@@ -21,4 +22,5 @@ public class Persistent : MonoBehaviour
     {
         _audioSource.Stop();
     }
+    
 }

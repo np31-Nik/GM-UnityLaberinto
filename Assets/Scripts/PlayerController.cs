@@ -85,7 +85,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.CompareTag("tablero"))
+        if (other.gameObject.CompareTag("DeadZone"))
         {
             winText.text = "Perdiste?!! :(";
             myAudioSource.PlayOneShot(defeatSound,1);
