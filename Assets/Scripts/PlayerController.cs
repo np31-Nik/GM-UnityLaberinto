@@ -16,7 +16,9 @@ public class PlayerController : MonoBehaviour
     public AudioClip victorySound;
     public AudioClip defeatSound;
     public AudioClip movingSound1;
-
+    public GameObject victoryScreen;
+    public GameObject defeatScreen;
+    public GameObject sueloController;
     private bool gameEnded;
 
     void Start()
@@ -74,6 +76,15 @@ public class PlayerController : MonoBehaviour
                 contador = contador + gemValue;
                 SetCountText();
                 myAudioSource.PlayOneShot(gemSound,1);
+            }else if (other.gameObject.CompareTag("portal")){
+                gameEnded = true;
+                sueloController.GetComponent<SueloController>().gameEnded=true;
+                winText.text = "Ganaste!!";
+                myAudioSource.PlayOneShot(victorySound,1);
+                Time.timeScale = 0.01f;
+                Time.fixedDeltaTime = 0.02F * Time.timeScale;
+                victoryScreen.SetActive(true);
+                victoryScreen.GetComponent<EndGamePanel>().score.text += contador;
             }
         }
         
@@ -84,9 +95,9 @@ public class PlayerController : MonoBehaviour
         countText.text = "Contador: " + contador.ToString();
         if (contador >= 4)
         {
-            winText.text = "Ganaste!!";
-            myAudioSource.PlayOneShot(victorySound,1);
-            Time.timeScale = 0;
+            //winText.text = "Ganaste!!";
+            //myAudioSource.PlayOneShot(victorySound,1);
+            //Time.timeScale = 0;
         }
     }
 
@@ -95,9 +106,15 @@ public class PlayerController : MonoBehaviour
         if(!gameEnded){
             if (other.gameObject.CompareTag("DeadZone"))
             {
+                gameEnded = true;
+                sueloController.GetComponent<SueloController>().gameEnded=true;
                 winText.text = "Perdiste?!! :(";
                 myAudioSource.PlayOneShot(defeatSound,1);
-                Invoke("QuitGame", 3f);
+                Time.timeScale = 0.1f;
+                Time.fixedDeltaTime = 0.02F * Time.timeScale;
+                defeatScreen.SetActive(true);
+                defeatScreen.GetComponent<EndGamePanel>().score.text += contador;
+                //Invoke("QuitGame", 3f);
             }
         }
         

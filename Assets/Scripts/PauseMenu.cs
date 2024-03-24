@@ -7,7 +7,11 @@ public class PauseMenu : MonoBehaviour
 
     public void Pause(){
         Debug.Log("Paused");
-        Time.timeScale = 0;
+        if(Time.timeScale == 0){
+            Time.timeScale = 1;
+        }else{
+            Time.timeScale = 0;
+        }
     }
     public void UnPause(){
         Time.timeScale = 1;

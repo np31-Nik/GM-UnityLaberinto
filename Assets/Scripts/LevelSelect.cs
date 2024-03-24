@@ -14,10 +14,13 @@ public class LevelSelect : MonoBehaviour
     }
     public void Level2(){
         //SceneManager.LoadScene("level2");
-        SceneManager.LoadScene("test_ground");
+                SceneManager.LoadScene("test_pauseMenu");
+
     }
     public void Level3(){
-        SceneManager.LoadScene("level3");
+        //SceneManager.LoadScene("level3");
+        SceneManager.LoadScene("test_ground");
+
     }
     public void Level4(){
         SceneManager.LoadScene("level4");

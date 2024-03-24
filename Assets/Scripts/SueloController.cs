@@ -13,7 +13,10 @@ public class SueloController : MonoBehaviour {
 
     private float initialYRotation;
 
+    public bool gameEnded;
+
     void Start () {
+        gameEnded = false;
         #if UNITY_ANDROID
             isAndroid = true;
         #else
@@ -25,19 +28,21 @@ public class SueloController : MonoBehaviour {
     }
 
     void FixedUpdate () {
-        if (isAndroid)
-        {
-            float posH = Input.acceleration.x;
-            float posV = Input.acceleration.y;
+        if(!gameEnded){
+            if (isAndroid)
+            {
+                float posH = Input.acceleration.x;
+                float posV = Input.acceleration.y;
 
-            RotateObject(posH, posV);
-        }
-        else
-        {
-            float posH = Input.GetAxis("Horizontal");
-            float posV = Input.GetAxis("Vertical");
+                RotateObject(posH, posV);
+            }
+            else
+            {
+                float posH = Input.GetAxis("Horizontal");
+                float posV = Input.GetAxis("Vertical");
 
-            RotateObject(posV, posH);
+                RotateObject(posV, posH);
+            }
         }
     }
 
