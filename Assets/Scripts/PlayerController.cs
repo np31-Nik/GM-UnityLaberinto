@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     public GameObject victoryScreen;
     public GameObject defeatScreen;
     public GameObject sueloController;
+        public GameObject sueloController2;
+
     private bool gameEnded;
 
     void Start()
@@ -46,7 +48,7 @@ public class PlayerController : MonoBehaviour
 
                 Vector3 movimiento = new Vector3(posH, 0.0f, posV);
 
-                rb.AddForce(movimiento * velocidad);
+                rb.AddForce(movimiento); //* velocidad);
             }
             else
             {
@@ -55,8 +57,8 @@ public class PlayerController : MonoBehaviour
                 float posV = Input.GetAxis("Vertical");
 
                 Vector3 movimiento = new Vector3(posH, 0.0f, posV);
-
-                rb.AddForce(movimiento * velocidad);
+                rb.AddForce(movimiento);
+                //rb.AddForce(movimiento * velocidad);
 
                 if(!myAudioSource.isPlaying){
                     //myAudioSource.PlayOneShot(movingSound1,0.5f);

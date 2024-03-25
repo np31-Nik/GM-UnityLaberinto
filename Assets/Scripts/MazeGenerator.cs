@@ -20,27 +20,48 @@ public class MazeGenerator : MonoBehaviour
     [SerializeField]
     private GameObject[] _collectables;
 
+    [SerializeField]
+    private GameObject _player;
+
+    [SerializeField]
+    private GameObject _portal;
+
+    private bool portalPlaced;
+
     // Start is called before the first frame update
     void Start()
     {
         _mazeGrid = new MazeCell[_mazeWidth, _mazeDepth];
-
+        portalPlaced = false;
         for (int x = 0; x < _mazeWidth; x++){
             for (int z = 0; z < _mazeDepth; z++){
                 _mazeGrid[x,z] = Instantiate(_mazeCellPrefab, new Vector3(x,0,z), Quaternion.identity);
+                _mazeGrid[x,z].transform.SetParent(transform);
             }
         }
         GenerateMaze(null,_mazeGrid[0,0]);
+        Vector3 spawnPosition = new Vector3(_mazeGrid[0,0].transform.position.x, _mazeGrid[0,0].transform.position.y +1f ,_mazeGrid[0,0].transform.position.z);
+        Instantiate(_player, spawnPosition, Quaternion.identity);
     }
 
     private void GenerateMaze(MazeCell previousCell, MazeCell currentCell){
         currentCell.Visit();
         ClearWalls(previousCell,currentCell);
 
-        if(previousCell!=null){
-            
+        int x = (int)currentCell.transform.position.x;
+        int z = (int)currentCell.transform.position.z;
+
+
+        if(!portalPlaced && (z == _mazeDepth-1)){
+            Vector3 spawnPositionPortal = new Vector3(currentCell.transform.position.x,currentCell.transform.position.y,currentCell.transform.position.z+0.3f);
+            GameObject portal = Instantiate(_portal, spawnPositionPortal, Quaternion.Euler(new Vector3(0,90,0)));
+            portal.transform.SetParent(transform);
+            portalPlaced=true;
+
+        }else if(previousCell!=null){
             int spawnChance = Random.Range(0,101);
             if(spawnChance >= 80){
+
                 int gemChance = Random.Range(0,101);
                 int gemIndex = 0;
                 Debug.Log("spawnChance: "+spawnChance+", gemChance: "+gemChance);
@@ -52,7 +73,9 @@ public class MazeGenerator : MonoBehaviour
                     gemIndex = 3;
                 }
 
-                Instantiate(_collectables[gemIndex], currentCell.transform.position, Quaternion.Euler(new Vector3(-90,0,0)));
+                Vector3 spawnPositionGem = new Vector3(currentCell.transform.position.x,currentCell.transform.position.y +0.2f,currentCell.transform.position.z);
+                GameObject gem = Instantiate(_collectables[gemIndex], spawnPositionGem, Quaternion.Euler(new Vector3(-90,0,0)));
+                gem.transform.SetParent(transform);
             }
             
         }
