@@ -19,10 +19,14 @@ public class PlayerController : MonoBehaviour
     public GameObject victoryScreen;
     public GameObject defeatScreen;
     public GameObject sueloController;
-        public GameObject sueloController2;
+    public GameObject mazeGenerator;
 
     private bool gameEnded;
 
+    public void SetSuelo(GameObject suelo){
+        sueloController = suelo;
+        Debug.Log("sueloController: "+sueloController);
+    }
     void Start()
     {
         gameEnded = false;
@@ -48,7 +52,7 @@ public class PlayerController : MonoBehaviour
 
                 Vector3 movimiento = new Vector3(posH, 0.0f, posV);
 
-                rb.AddForce(movimiento); //* velocidad);
+                rb.AddForce(movimiento * velocidad);
             }
             else
             {
@@ -57,8 +61,8 @@ public class PlayerController : MonoBehaviour
                 float posV = Input.GetAxis("Vertical");
 
                 Vector3 movimiento = new Vector3(posH, 0.0f, posV);
-                rb.AddForce(movimiento);
-                //rb.AddForce(movimiento * velocidad);
+                //rb.AddForce(movimiento);
+                rb.AddForce(movimiento * velocidad);
 
                 if(!myAudioSource.isPlaying){
                     //myAudioSource.PlayOneShot(movingSound1,0.5f);
@@ -78,6 +82,8 @@ public class PlayerController : MonoBehaviour
                 contador = contador + gemValue;
                 SetCountText();
                 myAudioSource.PlayOneShot(gemSound,1);
+                                mazeGenerator.GetComponent<MazeGenerator>().gemsPicked += 1;
+
             }else if (other.gameObject.CompareTag("portal")){
                 gameEnded = true;
                 sueloController.GetComponent<SueloController>().gameEnded=true;

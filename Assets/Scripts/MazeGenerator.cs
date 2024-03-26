@@ -7,8 +7,8 @@ using UnityEngine.SceneManagement;
 public class MazeGenerator : MonoBehaviour
 {
     [SerializeField]
-    private MazeCell _mazeCellPrefab;
-
+    private MazeCell[] _mazeCellPrefabs; 
+    
     [SerializeField]
     private int _mazeWidth;
     
@@ -28,20 +28,68 @@ public class MazeGenerator : MonoBehaviour
 
     private bool portalPlaced;
 
+    private int gemsSpawned;
+    public int gemsPicked;
+
+    private GameObject portalEffects;
+
+    public int difficulty;
+
     // Start is called before the first frame update
     void Start()
     {
+        Time.timeScale = 1f;
+        Time.fixedDeltaTime = 0.02f;
+
         _mazeGrid = new MazeCell[_mazeWidth, _mazeDepth];
         portalPlaced = false;
+
+        gemsSpawned = 0;
+        gemsPicked = 0;
+
         for (int x = 0; x < _mazeWidth; x++){
             for (int z = 0; z < _mazeDepth; z++){
-                _mazeGrid[x,z] = Instantiate(_mazeCellPrefab, new Vector3(x,0,z), Quaternion.identity);
-                _mazeGrid[x,z].transform.SetParent(transform);
+
+                MazeCell prefab;
+                int cellIndex = 0;
+
+                if(x == 0 && z == 0){
+                    cellIndex = 0;
+                }else{
+                    int cellChance = Random.Range(difficulty * 10,101);
+                    Debug.Log("cellChance: "+cellChance);
+                    if(50 < cellChance && cellChance < 75){
+                        cellIndex = 1;
+                    }else if(75 < cellChance){
+                        cellIndex = 2;
+                    }
+                }
+                Debug.Log("cellIndex: "+cellIndex);
+                prefab = _mazeCellPrefabs[cellIndex];
+
+                _mazeGrid[x, z] = Instantiate(prefab, new Vector3(x, 0, z), Quaternion.identity);
+                _mazeGrid[x, z].transform.SetParent(transform);
+                
+               
             }
         }
         GenerateMaze(null,_mazeGrid[0,0]);
         Vector3 spawnPosition = new Vector3(_mazeGrid[0,0].transform.position.x, _mazeGrid[0,0].transform.position.y +1f ,_mazeGrid[0,0].transform.position.z);
-        Instantiate(_player, spawnPosition, Quaternion.identity);
+        _player = Instantiate(_player, spawnPosition, Quaternion.identity);
+
+        Transform parentTransform = _player.transform; 
+
+        foreach (Transform child in parentTransform)
+        {
+            if (child.CompareTag("Player"))
+            {
+                Debug.Log("Player found");
+                GameObject childGameObject = child.gameObject;
+                PlayerController p = childGameObject.GetComponent<PlayerController>();
+                p.SetSuelo(gameObject);
+                p.mazeGenerator = gameObject;
+            }
+        }
     }
 
     private void GenerateMaze(MazeCell previousCell, MazeCell currentCell){
@@ -54,11 +102,13 @@ public class MazeGenerator : MonoBehaviour
 
         if(!portalPlaced && (z == _mazeDepth-1)){
             Vector3 spawnPositionPortal = new Vector3(currentCell.transform.position.x,currentCell.transform.position.y,currentCell.transform.position.z+0.3f);
-            GameObject portal = Instantiate(_portal, spawnPositionPortal, Quaternion.Euler(new Vector3(0,90,0)));
-            portal.transform.SetParent(transform);
+            _portal = Instantiate(_portal, spawnPositionPortal, Quaternion.Euler(new Vector3(0,90,0)));
+            _portal.transform.SetParent(transform);
             portalPlaced=true;
+            portalEffects = _portal.transform.Find("portalEffect").gameObject;
+            portalEffects.SetActive(false);
 
-        }else if(previousCell!=null){
+        }else if(previousCell!=null && currentCell.GetCellType() != 1){
             int spawnChance = Random.Range(0,101);
             if(spawnChance >= 80){
 
@@ -76,6 +126,7 @@ public class MazeGenerator : MonoBehaviour
                 Vector3 spawnPositionGem = new Vector3(currentCell.transform.position.x,currentCell.transform.position.y +0.2f,currentCell.transform.position.z);
                 GameObject gem = Instantiate(_collectables[gemIndex], spawnPositionGem, Quaternion.Euler(new Vector3(-90,0,0)));
                 gem.transform.SetParent(transform);
+                gemsSpawned += 1;
             }
             
         }
@@ -167,6 +218,9 @@ public class MazeGenerator : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.F1)){
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+        if(portalEffects && gemsSpawned <= gemsPicked){
+            portalEffects.SetActive(true);
         }
     }
 }

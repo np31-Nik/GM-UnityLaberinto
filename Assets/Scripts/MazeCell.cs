@@ -19,6 +19,9 @@ public class MazeCell : MonoBehaviour
     [SerializeField]
     private GameObject _unvisitedBlock;
 
+    [SerializeField]
+    private int _type;
+
     public bool IsVisited{get; private set;}
 
     public void Visit(){
@@ -38,5 +41,8 @@ public class MazeCell : MonoBehaviour
         _backWall.SetActive(false);
     }
 
+    public int GetCellType(){
+        return _type;
+    }
 
 }
