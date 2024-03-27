@@ -61,10 +61,14 @@ public class MazeGenerator : MonoBehaviour
                 }else{
                     int cellChance = Random.Range(difficulty * 10,101);
                     Debug.Log("cellChance: "+cellChance);
-                    if(50 < cellChance && cellChance < 75){
+                    if(50 < cellChance && cellChance < 90){
                         cellIndex = 1;
-                    }else if(75 < cellChance){
-                        cellIndex = 2;
+                    }else if(90 < cellChance){
+                        if(difficulty >= 2){
+                            cellIndex = 2;
+                        }else{
+                            cellIndex = 1;
+                        }
                     }
                 }
                 Debug.Log("cellIndex: "+cellIndex);
@@ -140,8 +144,6 @@ public class MazeGenerator : MonoBehaviour
             }
             
         }
-
-        //yield return new WaitForSeconds(0.05f);
 
         MazeCell nextCell;
 

@@ -9,7 +9,9 @@ public class EndGamePanel : MonoBehaviour
 
     public TextMeshProUGUI score;
     private int scene;
-
+    public GameObject loadingScreen;
+    public TextMeshProUGUI loadText;
+    
     public void Start(){
         scene = SceneManager.GetActiveScene().buildIndex;
     }
@@ -29,7 +31,18 @@ public class EndGamePanel : MonoBehaviour
         if(scene == 6){
             SceneManager.LoadScene("level_select");
         }else{
-            SceneManager.LoadScene(scene+1);
+            StartCoroutine(LoadLevel(scene+1));
+        }
+    }
+
+    private IEnumerator LoadLevel(int level){
+        AsyncOperation operation = SceneManager.LoadSceneAsync(level);
+        loadingScreen.SetActive(true);
+
+        while(!operation.isDone){
+            float progress = Mathf.Round(operation.progress * 100);
+            loadText.text = progress.ToString() + " %";
+            yield return null;
         }
     }
 

@@ -33,7 +33,7 @@ public class SueloController : MonoBehaviour {
             {
                 float posH = Input.acceleration.x;
                 float posV = Input.acceleration.y;
-
+                RateOfRotate = 0f;
                 RotateObject(posV, posH);
             }
             else
