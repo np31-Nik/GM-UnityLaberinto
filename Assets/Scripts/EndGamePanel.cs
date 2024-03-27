@@ -26,7 +26,11 @@ public class EndGamePanel : MonoBehaviour
     public void NextLevel(){
         Time.timeScale = 1f;
         Time.fixedDeltaTime = 0.02F ;
-        SceneManager.LoadScene(scene+1);
+        if(scene == 6){
+            SceneManager.LoadScene("level_select");
+        }else{
+            SceneManager.LoadScene(scene+1);
+        }
     }
 
 
