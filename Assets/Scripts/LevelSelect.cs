@@ -9,24 +9,21 @@ public class LevelSelect : MonoBehaviour
 
     }
     public void Level1(){
-        //SceneManager.LoadScene("level1");
-        SceneManager.LoadScene("test_gems");
+        SceneManager.LoadScene("level_1");
     }
     public void Level2(){
-        //SceneManager.LoadScene("level2");
-                SceneManager.LoadScene("test_pauseMenu");
+        SceneManager.LoadScene("level_2");
 
     }
     public void Level3(){
-        //SceneManager.LoadScene("level3");
-        SceneManager.LoadScene("test_ground");
+        SceneManager.LoadScene("level_3");
 
     }
     public void Level4(){
-        SceneManager.LoadScene("level4");
+        SceneManager.LoadScene("level_4");
     }
     public void Level5(){
-        SceneManager.LoadScene("level5");
+        SceneManager.LoadScene("level_5");
     }
     public void MainMenu(){
         SceneManager.LoadScene("menu_main");

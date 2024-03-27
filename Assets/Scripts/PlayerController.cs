@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
     public float velocidad;
-    public Text countText;
-    public Text winText;
+    public TextMeshProUGUI countText;
 
     private Rigidbody rb;
     private int contador;
@@ -33,7 +33,6 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         contador = 0;
         SetCountText();
-        winText.text = "";
 
 #if UNITY_ANDROID
         isAndroid = true;
@@ -87,7 +86,6 @@ public class PlayerController : MonoBehaviour
             }else if (other.gameObject.CompareTag("portal")){
                 gameEnded = true;
                 sueloController.GetComponent<SueloController>().gameEnded=true;
-                winText.text = "Ganaste!!";
                 myAudioSource.PlayOneShot(victorySound,1);
                 Time.timeScale = 0.01f;
                 Time.fixedDeltaTime = 0.02F * Time.timeScale;
@@ -100,13 +98,7 @@ public class PlayerController : MonoBehaviour
 
     void SetCountText()
     {
-        countText.text = "Contador: " + contador.ToString();
-        if (contador >= 4)
-        {
-            //winText.text = "Ganaste!!";
-            //myAudioSource.PlayOneShot(victorySound,1);
-            //Time.timeScale = 0;
-        }
+        countText.text = "Score: " + contador.ToString();
     }
 
     private void OnTriggerExit(Collider other)
@@ -116,7 +108,6 @@ public class PlayerController : MonoBehaviour
             {
                 gameEnded = true;
                 sueloController.GetComponent<SueloController>().gameEnded=true;
-                winText.text = "Perdiste?!! :(";
                 myAudioSource.PlayOneShot(defeatSound,1);
                 Time.timeScale = 0.1f;
                 Time.fixedDeltaTime = 0.02F * Time.timeScale;

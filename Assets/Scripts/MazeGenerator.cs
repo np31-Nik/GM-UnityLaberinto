@@ -35,6 +35,9 @@ public class MazeGenerator : MonoBehaviour
 
     public int difficulty;
 
+    [SerializeField]
+    private Camera gameCamera;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -90,6 +93,7 @@ public class MazeGenerator : MonoBehaviour
                 p.mazeGenerator = gameObject;
             }
         }
+        Camera cam = Instantiate(gameCamera, new Vector3((_mazeWidth-1)*.5f, (_mazeDepth+1)*.5f, -.5f), Quaternion.Euler(new Vector3(60, 0, 0)));
     }
 
     private void GenerateMaze(MazeCell previousCell, MazeCell currentCell){
@@ -110,18 +114,24 @@ public class MazeGenerator : MonoBehaviour
 
         }else if(previousCell!=null && currentCell.GetCellType() != 1){
             int spawnChance = Random.Range(0,101);
-            if(spawnChance >= 80){
+
+            if(difficulty == 0 && gemsSpawned == 0){
+                spawnChance = 40;
+            }
+
+            if(spawnChance >= 33){
 
                 int gemChance = Random.Range(0,101);
                 int gemIndex = 0;
                 Debug.Log("spawnChance: "+spawnChance+", gemChance: "+gemChance);
+
                 if(50 < gemChance && gemChance < 70){
                     gemIndex = 1;
                 }else if(70 < gemChance && gemChance < 90){
                     gemIndex = 2;
                 }else if(90 < gemChance){
                     gemIndex = 3;
-                }
+                } 
 
                 Vector3 spawnPositionGem = new Vector3(currentCell.transform.position.x,currentCell.transform.position.y +0.2f,currentCell.transform.position.z);
                 GameObject gem = Instantiate(_collectables[gemIndex], spawnPositionGem, Quaternion.Euler(new Vector3(-90,0,0)));
