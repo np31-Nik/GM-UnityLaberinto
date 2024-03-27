@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
                 float posH = Input.acceleration.x;
                 float posV = Input.acceleration.y;
 
-                Vector3 movimiento = new Vector3(posH, 0.0f, posV);
+                Vector3 movimiento = new Vector3(posV, 0.0f, posH);
 
                 rb.AddForce(movimiento * velocidad);
             }
